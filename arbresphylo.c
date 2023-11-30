@@ -6,15 +6,31 @@
 #include "arbresphylo.h"
 #include "listes.h"
 
-void analyse_arbre (arbre racine, int* nb_esp, int* nb_carac)
+void analyse_arbre_rec(arbre racine, int *nb_esp, int *nb_carac)
 {
-   printf ("<<<<< À faire: fonction analyse_arbre fichier " __FILE__ "\n >>>>>");
+   if (!racine)
+   {
+      return;
+   }
+   if ((!(racine->droit) && !(racine->gauche)))
+   {
+      (*nb_esp)++;
+   }
+   else
+   {
+      (*nb_carac)++;
+      analyse_arbre_rec(racine->droit, nb_esp, nb_carac);
+      analyse_arbre_rec(racine->gauche, nb_esp, nb_carac);
+   }
+   return;
 }
 
-
-
-
-
+void analyse_arbre (arbre racine, int* nb_esp, int* nb_carac)
+{
+   *nb_esp = 0;
+   *nb_carac = 0;
+   analyse_arbre_rec(racine, nb_esp, nb_carac);
+}
 
 /* ACTE II */
 /* Recherche l'espece dans l'arbre. Modifie la liste passée en paramètre pour y mettre les
