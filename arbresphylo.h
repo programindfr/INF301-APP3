@@ -9,7 +9,7 @@
  */
 void analyse_arbre (arbre racine, int* nb_esp, int* nb_carac);
 
-void analyse_arbre(arbre racine, int *nb_esp, int *nb_carac);
+void analyse_arbre_rec(arbre racine, int *nb_esp, int *nb_carac);
 
 /* Recherche une espèce dans l'arbre et remplit seq avec la séquence de ses 
  * caractéristiques.
@@ -18,6 +18,7 @@ void analyse_arbre(arbre racine, int *nb_esp, int *nb_carac);
  */
 int rechercher_espece (arbre racine, char *espece, liste_t* seq);
 
+int rechercher_espece_rec(noeud *n, char *espece, liste_t *seq);
 
 int ajouter_espece (arbre* racine, char *espece, cellule_t* seq);
 

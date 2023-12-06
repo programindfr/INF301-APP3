@@ -6,20 +6,25 @@
 
 /* fichier à compléter au besoin */
 
-void init_liste_vide(liste_t* L) {
-   printf ("<<<<< À faire: fonction init_liste_vide fichier " __FILE__ "\n >>>>>");
-    /* a completer */
+void init_liste_vide(liste_t* L)
+{
+    L->tete = malloc(sizeof(cellule_t));
+    L->tete->suivant = NULL;
+    L->tete->val = NULL;
+    return;
 }
 
-void liberer_liste(liste_t* L) {
-   printf ("<<<<< À faire: fonction liberer_liste fichier " __FILE__ "\n >>>>>");
-    /* a completer */
+void liberer_liste(liste_t* L)
+{
+    init_liste_vide(L);
+    return;
 }
 
-
-int ajouter_tete(liste_t* L, string c) { /* retourne 0 si OK, 1 sinon  */
-   printf ("<<<<< À faire: fonction ajouter_tete fichier " __FILE__ " >>>>>\n");
-    /* a completer */
-        return 1;
+int ajouter_tete(liste_t* L, string c)
+{ /* retourne 0 si OK, 1 sinon  */
+    cellule_t *cell = malloc(sizeof(cellule_t));
+    cell->val = c;
+    cell->suivant = L->tete;
+    L->tete = cell;
+    return 0;
 }
-
