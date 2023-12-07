@@ -20,7 +20,9 @@ int rechercher_espece (arbre racine, char *espece, liste_t* seq);
 
 int rechercher_espece_rec(noeud *n, char *espece, liste_t *seq);
 
-int ajouter_espece (arbre* racine, char *espece, cellule_t* seq);
+int ajouter_espece (arbre* racine, char *espece, cellule_t* cell);
+
+int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell);
 
 void afficher_par_niveau(arbre racine, FILE* fout);
 

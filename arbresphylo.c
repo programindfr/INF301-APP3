@@ -89,10 +89,20 @@ int rechercher_espece_rec(noeud *n, char *espece, liste_t *seq)
 /* Doit renvoyer 0 si l'espece a bien ete ajoutee, 1 sinon, et ecrire un 
  * message d'erreur.
  */
-int ajouter_espece (arbre* a, char *espece, cellule_t* seq)
+int ajouter_espece (arbre* a, char *espece, cellule_t* cell)
 {
-
+   affiche_arbre(*a);
    return 1;
+}
+
+int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
+{
+   if (!n)
+   {
+      return 0;
+   }
+   
+   return 0;
 }
 
 /* Doit afficher la liste des caractéristiques niveau par niveau, de gauche
