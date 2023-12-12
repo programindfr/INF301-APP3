@@ -94,13 +94,17 @@ int rechercher_espece_rec(noeud *n, char *espece, liste_t *seq)
  */
 int ajouter_espece (arbre* a, char *espece, cellule_t* cell)
 {
-   affiche_arbre(*a);
-   if (ajouter_espece_rec(*a, espece, cell))
+   if ((*a) == NULL)
    {
-      affiche_arbre(*a);
+      (*a) = nouveau_noeud();
+   }
+
+   if (ajouter_espece_rec((*a), espece, cell))
+   {
+      affiche_arbre((*a));
       return 0;
    }
-   affiche_arbre(*a);
+   affiche_arbre((*a));
    return 1;
 }
 
@@ -114,20 +118,19 @@ int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
       n = nouveau_noeud();
       return ajouter_espece_rec(n, espece, cell);
    }
-   if (n->valeur == NULL && cell->val == NULL)
+   if (n->valeur == NULL && cell == NULL)
    {
       n->valeur = espece;
       return 1;
    }
-   if (n->valeur == NULL && cell->val != NULL)
+   if (n->valeur == NULL && cell != NULL)
    {
       n->valeur = cell->val;
       n->droit = nouveau_noeud();
       return ajouter_espece_rec(n->droit, espece, cell->suivant);
    }
 
-   resultat_recherche = n->gauche != NULL && n->droit != NULL;
-
+   resultat_recherche = (n->gauche != NULL) || (n->droit != NULL);
    if (resultat_recherche == 0 && cell == NULL)
    {
       printf("Ne peut ajouter %s: possède les mêmes caractères que %s\n", espece, n->valeur);
