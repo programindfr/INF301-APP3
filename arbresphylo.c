@@ -69,13 +69,16 @@ int rechercher_espece_rec(noeud *n, char *espece, liste_t *seq)
    {
       return 1;
    }
-   if (rechercher_espece_rec (n->droit, espece, seq))
+   if (rechercher_espece_rec(n->droit, espece, seq))
    {
-      if (seq->tete->val)
+      if (seq->tete)
       {
          ajouter_tete(seq, n->valeur);
          return 1;
       }
+      seq->tete = malloc(sizeof(cellule_t));
+      seq->tete->suivant = NULL;
+      seq->tete->val = NULL;
       seq->tete->val = n->valeur;
       return 1;
    }
@@ -92,17 +95,69 @@ int rechercher_espece_rec(noeud *n, char *espece, liste_t *seq)
 int ajouter_espece (arbre* a, char *espece, cellule_t* cell)
 {
    affiche_arbre(*a);
+   if (ajouter_espece_rec(*a, espece, cell))
+   {
+      affiche_arbre(*a);
+      return 0;
+   }
+   affiche_arbre(*a);
    return 1;
 }
 
 int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
 {
-   if (!n)
+   int resultat_recherche;
+   char *buffer = NULL;
+
+   if (n == NULL)
    {
+      n = nouveau_noeud();
+      return ajouter_espece_rec(n, espece, cell);
+   }
+   if (n->valeur == NULL && cell->val == NULL)
+   {
+      n->valeur = espece;
+      return 1;
+   }
+   if (n->valeur == NULL && cell->val != NULL)
+   {
+      n->valeur = cell->val;
+      n->droit = nouveau_noeud();
+      return ajouter_espece_rec(n->droit, espece, cell->suivant);
+   }
+
+   resultat_recherche = n->gauche != NULL && n->droit != NULL;
+
+   if (resultat_recherche == 0 && cell == NULL)
+   {
+      printf("Ne peut ajouter %s: possède les mêmes caractères que %s\n", espece, n->valeur);
       return 0;
    }
-   
-   return 0;
+   if (resultat_recherche == 0 && cell != NULL)
+   {
+      buffer = n->valeur;
+      n->valeur = cell->val;
+      n->droit = nouveau_noeud();
+      n->gauche = nouveau_noeud();
+      n->gauche->valeur = buffer;
+      return ajouter_espece_rec(n->droit, espece, cell->suivant);
+   }
+   if (resultat_recherche == 1 && cell == NULL)
+   {
+      return ajouter_espece_rec(n->gauche, espece, cell);
+   }
+   if (resultat_recherche == 1 && cell != NULL)
+   {
+      if (strcmp(n->valeur, cell->val) == 0)
+      {
+         return ajouter_espece_rec(n->droit, espece, cell->suivant);
+      }
+      else
+      {
+         return ajouter_espece_rec(n->gauche, espece, cell);
+      }
+   }
+   assert(0);
 }
 
 /* Doit afficher la liste des caractéristiques niveau par niveau, de gauche

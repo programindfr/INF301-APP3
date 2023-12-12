@@ -8,9 +8,7 @@
 
 void init_liste_vide(liste_t* L)
 {
-    L->tete = malloc(sizeof(cellule_t));
-    L->tete->suivant = NULL;
-    L->tete->val = NULL;
+    L->tete = NULL;
     return;
 }
 
