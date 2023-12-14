@@ -9,6 +9,7 @@
  */
 void analyse_arbre (arbre racine, int* nb_esp, int* nb_carac);
 
+/* Implementation récursive de analyse arbre */
 void analyse_arbre_rec(arbre racine, int *nb_esp, int *nb_carac);
 
 /* Recherche une espèce dans l'arbre et remplit seq avec la séquence de ses 
@@ -18,10 +19,18 @@ void analyse_arbre_rec(arbre racine, int *nb_esp, int *nb_carac);
  */
 int rechercher_espece (arbre racine, char *espece, liste_t* seq);
 
+/*
+   Fontion recherche récursive utilisée par rechercher espece
+   Retourne 0 si espece trouvée et 1 sinon
+*/
 int rechercher_espece_rec(noeud *n, char *espece, liste_t *seq);
 
+/* Doit renvoyer 0 si l'espece a bien ete ajoutee, 1 sinon, et ecrire un
+ * message d'erreur.
+ */
 int ajouter_espece (arbre* racine, char *espece, cellule_t* cell);
 
+/* Fonction récursive utilisée par ajouter_espece */
 int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell);
 
 void afficher_par_niveau(arbre racine, FILE* fout);

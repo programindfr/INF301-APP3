@@ -33,15 +33,17 @@ void analyse_arbre (arbre racine, int* nb_esp, int* nb_carac)
 }
 
 /* ACTE II */
-/* Recherche l'espece dans l'arbre. Modifie la liste passée en paramètre pour y mettre les
- * caractéristiques. Retourne 0 si l'espèce a été retrouvée, 1 sinon.
+/* 
+   Recherche l'espece dans l'arbre. Modifie la liste passée en paramètre pour y mettre les
+   caractéristiques.
+   Retourne 0 si l'espèce a été retrouvée, 1 sinon.
  */
 int rechercher_espece (arbre racine, char *espece, liste_t* seq)
 {
    init_liste_vide(seq);
    cellule_t *current = NULL;
 
-   if (!rechercher_espece_rec(racine, espece, seq))
+   if (rechercher_espece_rec(racine, espece, seq) == 1)
    {
       printf("L'espèce n'est pas référée dans l'arbre.\n");
       return 1;
@@ -59,39 +61,40 @@ int rechercher_espece (arbre racine, char *espece, liste_t* seq)
    return 0;
 }
 
+/* 
+   Implémentation recherche récursive
+   Retourne 0 si espece trouvée et 1 sinon
+*/
 int rechercher_espece_rec(noeud *n, char *espece, liste_t *seq)
 {
-   if (!n)
-   {
-      return 0;
-   }
-   if (!(strcmp(espece, n->valeur)))
+   if (n == NULL)
    {
       return 1;
    }
-   if (rechercher_espece_rec(n->droit, espece, seq))
+   if ((strcmp(espece, n->valeur)) == 0)
    {
-      if (seq->tete)
+      return 0;
+   }
+   if (rechercher_espece_rec(n->droit, espece, seq) == 0)
+   {
+      if (seq->tete != NULL)
       {
          ajouter_tete(seq, n->valeur);
-         return 1;
+         return 0;
       }
       seq->tete = malloc(sizeof(cellule_t));
       seq->tete->suivant = NULL;
       seq->tete->val = NULL;
       seq->tete->val = n->valeur;
-      return 1;
+      return 0;
    }
-   if (rechercher_espece_rec(n->gauche, espece, seq))
+   if (rechercher_espece_rec(n->gauche, espece, seq) == 0)
    {
-      return 1;
+      return 0;
    }
-   return 0;
+   return 1;
 }
 
-/* Doit renvoyer 0 si l'espece a bien ete ajoutee, 1 sinon, et ecrire un 
- * message d'erreur.
- */
 int ajouter_espece (arbre* a, char *espece, cellule_t* cell)
 {
    if ((*a) == NULL)
@@ -99,7 +102,7 @@ int ajouter_espece (arbre* a, char *espece, cellule_t* cell)
       (*a) = nouveau_noeud();
    }
 
-   if (ajouter_espece_rec((*a), espece, cell))
+   if (ajouter_espece_rec((*a), espece, cell) == 0)
    {
       affiche_arbre((*a));
       return 0;
@@ -121,7 +124,7 @@ int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
    if (n->valeur == NULL && cell == NULL)
    {
       n->valeur = espece;
-      return 1;
+      return 0;
    }
    if (n->valeur == NULL && cell != NULL)
    {
@@ -134,7 +137,7 @@ int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
    if (resultat_recherche == 0 && cell == NULL)
    {
       printf("Ne peut ajouter %s: possède les mêmes caractères que %s\n", espece, n->valeur);
-      return 0;
+      return 1;
    }
    if (resultat_recherche == 0 && cell != NULL)
    {
