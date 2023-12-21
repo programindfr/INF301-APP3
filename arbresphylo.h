@@ -3,7 +3,6 @@
 
 #include "listes.h"
 
-
 /* Analyse un arbre: doit mettre à jour le nombre d'espèces et de 
  * caractéristiques.
  */
@@ -33,6 +32,7 @@ int ajouter_espece (arbre* racine, char *espece, cellule_t* cell);
 /* Fonction récursive utilisée par ajouter_espece */
 int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell);
 
+/* Fonction affichage par niveau */
 void afficher_par_niveau(arbre racine, FILE* fout);
 
 // on considère qu'il n'est pas possible

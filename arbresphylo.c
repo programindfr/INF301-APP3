@@ -6,6 +6,8 @@
 #include "arbresphylo.h"
 #include "listes.h"
 
+#define TAILLE_MAX 10000
+
 void analyse_arbre_rec(arbre racine, int *nb_esp, int *nb_carac)
 {
    if (!racine)
@@ -170,14 +172,76 @@ int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
  * à droite, dans le fichier fout.
  * Appeler la fonction avec fout=stdin pour afficher sur la sortie standard.
  */
-void afficher_par_niveau (arbre racine, FILE* fout) {
-   printf ("<<<<< À faire: fonction afficher_par_niveau fichier " __FILE__ "\n >>>>>");
+void afficher_par_niveau (arbre racine, FILE* fout)
+{
+   int i, j;
+   noeud **visiter = NULL;
+   noeud **buffer = NULL;
+
+   visiter = malloc(sizeof(arbre) * TAILLE_MAX);
+   buffer = malloc(sizeof(arbre) * TAILLE_MAX);
+   
+   if (racine == NULL)
+   {
+      return;
+   }
+
+   // initialisation des tableaux
+   for (i = 0; i < TAILLE_MAX; i++)
+   {
+      visiter[i] = NULL;
+      buffer[i] = NULL;
+   }
+
+   visiter[0] = racine;
+   fprintf(fout, "%s\n", visiter[0]->valeur);
+   while (visiter[0] != NULL)
+   {
+      j = 0;
+      for (i = 0; (i < TAILLE_MAX) && (visiter[i] != NULL); i++)
+      {
+         if (visiter[i]->gauche != NULL)
+         {
+            if ((visiter[i]->gauche->droit != NULL) || (visiter[i]->gauche->gauche != NULL))
+            {
+               buffer[j] = visiter[i]->gauche;
+               j++;
+            }
+         }
+         if (visiter[i]->droit != NULL)
+         {
+            if ((visiter[i]->droit->droit != NULL) || (visiter[i]->droit->gauche != NULL))
+            {
+               buffer[j] = visiter[i]->droit;
+               j++;
+            }
+         }
+      }
+
+      for (j = 0; (j < TAILLE_MAX) && (buffer[j] != NULL); j++)
+      {
+         fprintf(fout, "%s ", buffer[j]->valeur);  
+      }
+      fprintf(fout, "\n");
+
+      for (j = 0; j < TAILLE_MAX; j++)
+      {
+         visiter[j] = buffer[j];
+         buffer[j] = NULL;
+      }
+   }
+
+   free(buffer);
+   free(visiter);
+
+   return;
 }
 
 // Acte 4
 
 
-int ajouter_carac(arbre* a, char* carac, cellule_t* seq) {
+int ajouter_carac(arbre* a, char* carac, cellule_t* seq)
+{
    printf ("<<<<< À faire: fonction ajouter_carac fichier " __FILE__ "\n >>>>>");
    return 0;
 }
