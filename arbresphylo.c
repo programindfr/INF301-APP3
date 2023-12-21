@@ -99,11 +99,13 @@ int rechercher_espece_rec(noeud *n, char *espece, liste_t *seq)
 
 int ajouter_espece (arbre* a, char *espece, cellule_t* cell)
 {
+   // gerer le cas arbre nul
    if ((*a) == NULL)
    {
       (*a) = nouveau_noeud();
    }
 
+   // cree/ecris affichage_arbre.dot
    if (ajouter_espece_rec((*a), espece, cell) == 0)
    {
       affiche_arbre((*a));
@@ -118,16 +120,19 @@ int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
    int resultat_recherche;
    char *buffer = NULL;
 
+   // cas noeud null (atteint apres l'ajout d'un carac)
    if (n == NULL)
    {
       n = nouveau_noeud();
       return ajouter_espece_rec(n, espece, cell);
    }
+   // cas n->valeur null et pas de carac diff (atteint lors de l'ajout de nouveaux caracs)
    if (n->valeur == NULL && cell == NULL)
    {
       n->valeur = espece;
       return 0;
    }
+   // cas n->valeur null et carac diff (atteint lors de l'ajout de nouveaux carac)
    if (n->valeur == NULL && cell != NULL)
    {
       n->valeur = cell->val;
@@ -135,14 +140,19 @@ int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
       return ajouter_espece_rec(n->droit, espece, cell->suivant);
    }
 
-   resultat_recherche = (n->gauche != NULL) || (n->droit != NULL);
+   resultat_recherche = (n->gauche != NULL) || (n->droit != NULL); // espece -> 1  carac -> 0
+   // cas espece sans carac diff
    if (resultat_recherche == 0 && cell == NULL)
    {
       printf("Ne peut ajouter %s: possède les mêmes caractères que %s\n", espece, n->valeur);
       return 1;
    }
+   // cas espece avec carac diff
    if (resultat_recherche == 0 && cell != NULL)
    {
+      // on remplace n->valeur (une espece) par le caractère
+      // on ajoute ensuite l'espece retiree dans la branche gauche
+      // on appelle alors ajouter_espece_rec sur les caracs restants et le noeud cree
       buffer = n->valeur;
       n->valeur = cell->val;
       n->droit = nouveau_noeud();
@@ -150,10 +160,16 @@ int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
       n->gauche->valeur = buffer;
       return ajouter_espece_rec(n->droit, espece, cell->suivant);
    }
+   // cas carac sans carac diff
+   // on renvoie l'appel sur la gauche
    if (resultat_recherche == 1 && cell == NULL)
    {
       return ajouter_espece_rec(n->gauche, espece, cell);
    }
+   // cas carac avec carac diff
+   // on regarde si carac est le premier carac diff
+   // si oui on renvoie l'appel avec le carac diff suivant et le noeud droit
+   // sinon on renvoie l'appel avec le meme carac diff et le noeud gauche
    if (resultat_recherche == 1 && cell != NULL)
    {
       if (strcmp(n->valeur, cell->val) == 0)
@@ -165,6 +181,7 @@ int ajouter_espece_rec(noeud *n, char *espece, cellule_t *cell)
          return ajouter_espece_rec(n->gauche, espece, cell);
       }
    }
+   // en cas d'erreur (non atteint)
    assert(0);
 }
 
@@ -186,7 +203,7 @@ void afficher_par_niveau (arbre racine, FILE* fout)
       return;
    }
 
-   // initialisation des tableaux
+   // initialisation des tableaux de noeud a visiter
    for (i = 0; i < TAILLE_MAX; i++)
    {
       visiter[i] = NULL;
@@ -200,16 +217,20 @@ void afficher_par_niveau (arbre racine, FILE* fout)
       j = 0;
       for (i = 0; (i < TAILLE_MAX) && (visiter[i] != NULL); i++)
       {
-         if (visiter[i]->gauche != NULL)
+         // element gauche ?
+         if (visiter[i]->gauche != NULL) 
          {
+            // element gauche espece ?
             if ((visiter[i]->gauche->droit != NULL) || (visiter[i]->gauche->gauche != NULL))
             {
                buffer[j] = visiter[i]->gauche;
                j++;
             }
          }
+         // element droit ?
          if (visiter[i]->droit != NULL)
          {
+            // element droit espece ?
             if ((visiter[i]->droit->droit != NULL) || (visiter[i]->droit->gauche != NULL))
             {
                buffer[j] = visiter[i]->droit;
@@ -218,12 +239,14 @@ void afficher_par_niveau (arbre racine, FILE* fout)
          }
       }
 
+      // ecriture dans fout
       for (j = 0; (j < TAILLE_MAX) && (buffer[j] != NULL); j++)
       {
          fprintf(fout, "%s ", buffer[j]->valeur);  
       }
       fprintf(fout, "\n");
 
+      // on passe les elements du buffer dans visiter et on vide buffer
       for (j = 0; j < TAILLE_MAX; j++)
       {
          visiter[j] = buffer[j];
@@ -239,7 +262,7 @@ void afficher_par_niveau (arbre racine, FILE* fout)
 
 // Acte 4
 
-
+// Non faite le 21/12
 int ajouter_carac(arbre* a, char* carac, cellule_t* seq)
 {
    printf ("<<<<< À faire: fonction ajouter_carac fichier " __FILE__ "\n >>>>>");
